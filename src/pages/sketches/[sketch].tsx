@@ -1,13 +1,17 @@
-import type { NextPage } from 'next';
+import type { GetStaticPaths, GetStaticProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
 
 import dynamic from 'next/dynamic';
 
 import { MDXRemote, MDXRemoteProps } from 'next-mdx-remote';
 import { serialize } from 'next-mdx-remote/serialize';
-import path from 'path';
 import * as fs from 'fs';
 import matter from 'gray-matter';
+import {
+    findAllSketchFolderNames,
+    getSketchDescriptionPath,
+} from '../../utils/utils';
+import { kebabToPascalCase } from '../../utils/sketchNameConverter';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 
@@ -21,7 +25,10 @@ const SketchPage: NextPage = ({ source, frontMatter }: MDXRemoteProps) => {
         () =>
             import('sketches').then((mod) => {
                 type SketchComponent = keyof typeof mod;
-                const s = (sketch + 'Sketch') as SketchComponent;
+                const componentName =
+                    kebabToPascalCase(sketch as string) + 'Sketch';
+                console.log(`Loading ${componentName}`);
+                const s = componentName as SketchComponent;
                 return mod[s] ?? mod['SnakeSketch'];
             }),
         {
@@ -31,25 +38,29 @@ const SketchPage: NextPage = ({ source, frontMatter }: MDXRemoteProps) => {
 
     return (
         <div className="dark h-screen w-screen bg-black text-white">
-            Hi {sketch}
             <DynamicSketch />
-            <MDXRemote {...source} />
+            <div className="w-full p-5 font-text">
+                <h1 className="font-title text-6xl font-bold">
+                    {frontMatter.title}
+                </h1>
+                <h2 className="font-text font-title text-lg font-light italic">
+                    {frontMatter.description}
+                </h2>
+                <div className="py-5">
+                    <MDXRemote {...source} />
+                </div>
+            </div>
         </div>
     );
 };
 
 export default SketchPage;
 
-export async function getStaticProps({ params }) {
+export const getStaticProps: GetStaticProps = async ({ params }) => {
     // MDX text - can be from a local file, database, anywhere
     //TODO: Make a const for this
-    console.log(process.cwd());
-    const filePath = path.join(
-        process.cwd(),
-        '/src/sketches/',
-        'polygon-morph',
-        'description.mdx'
-    );
+    console.log(params);
+    const filePath = getSketchDescriptionPath(params?.sketch as string);
     const source = fs.readFileSync(filePath);
 
     const { content, data } = matter(source);
@@ -69,11 +80,14 @@ export async function getStaticProps({ params }) {
             frontMatter: data,
         },
     };
-}
+};
 
-export async function getStaticPaths() {
+export const getStaticPaths: GetStaticPaths = () => {
+    const names = findAllSketchFolderNames();
     return {
-        paths: [{ params: { sketch: 'PolygonMorph' } }],
+        paths: names.map((name) => {
+            return { params: { sketch: name } };
+        }),
         fallback: true, // false or 'blocking'
     };
-}
+};

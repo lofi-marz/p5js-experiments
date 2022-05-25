@@ -46,7 +46,7 @@ function squaredDist(x1: number, y1: number, x2: number, y2: number) {
     return (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
 }
 
-const MetaballsSketch: React.FC = () => {
+export const MetaballsSketch: React.FC = () => {
     let metaballs: Metaball[];
 
     //See annotations in JS for more information
@@ -94,8 +94,6 @@ const MetaballsSketch: React.FC = () => {
                 //if (i % 100 == 0) console.log(density);
                 density = density > 240 ? 255 : 0;
 
-                if (squaredDist(x, y, p5.width / 2, p5.height / 2) > 250 * 250)
-                    density = 0;
                 //if (density < slider.value()) density/=
 
                 p5.pixels[i] = density;
@@ -140,5 +138,3 @@ const MetaballsSketch: React.FC = () => {
 
     return <Sketch setup={setup} draw={draw} />;
 };
-
-export default MetaballsSketch;

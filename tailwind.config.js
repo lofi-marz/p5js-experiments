@@ -12,8 +12,8 @@ module.exports = {
     theme: {
         extend: {
             fontFamily: {
-                logo: ['Poppins', 'sans-serif'],
-                sans: ['Poppins', ...defaultTheme.fontFamily.sans],
+                title: ['Poppins', ...defaultTheme.fontFamily.sans],
+                text: [...defaultTheme.fontFamily.sans],
             },
             keyframes: {
                 wiggle: {
