@@ -1,11 +1,17 @@
 import React from 'react';
 
 import P5 from 'p5';
-import dynamic from 'next/dynamic';
 
-const Sketch = dynamic(() => import('react-p5'), {
-    ssr: false,
-});
+import Sketch from 'react-p5';
+
+type Touch = {
+    x: number;
+    y: number;
+    winX: number;
+    winY: number;
+    id: number;
+};
+
 enum Direction {
     None,
     Up,
@@ -14,7 +20,7 @@ enum Direction {
     Left,
 }
 
-interface Position {
+interface Vector {
     x: number;
     y: number;
 }
@@ -35,8 +41,12 @@ const opposites = [
     Direction.Right,
 ];
 
+function dot(a: Vector, b: Vector): number {
+    return a.x * b.x + a.y * b.y;
+}
+
 class Snake {
-    segments: Position[];
+    segments: Vector[];
     currentDirection: Direction;
     newDirection: Direction;
     hasLost: boolean;
@@ -98,7 +108,7 @@ class Snake {
         p5.endShape();
     }
 
-    contains(pos: Position) {
+    contains(pos: Vector) {
         return this.segments.includes(pos);
     }
 }
@@ -108,10 +118,13 @@ export const SnakeSketch: React.FC = () => {
     let actionQueue: Direction[] = [];
     let cellSize: number;
 
-    let fruitPos: Position;
+    let fruitPos: Vector;
     let snake: Snake = new Snake(3, 3);
     const UPDATE_RATE = 250;
     let timeElapsed = 0;
+
+    let touchStart: Touch;
+    let touchEnd: Touch;
 
     const getNewFruitPos = (p5: P5) => {
         let newPos = {
@@ -206,5 +219,40 @@ export const SnakeSketch: React.FC = () => {
         }
     };
 
-    return <Sketch setup={setup} draw={draw} keyPressed={onKeyPressed} />;
+    const onTouchStarted = (p5: P5) => {
+        touchStart = p5.touches[0] as Touch;
+    };
+
+    const onTouchMoved = (p5: P5) => {
+        touchEnd = p5.touches[0] as Touch;
+        return false;
+    };
+
+    const onTouchEnded = (p5: P5) => {
+        const delta = {
+            x: touchEnd.x - touchStart.x,
+            y: touchEnd.y - touchStart.y,
+        };
+
+        const dir = directions.reduce((mostAligned, curr) => {
+            const dotMostAligned = dot(
+                { x: mostAligned[0], y: mostAligned[1] },
+                delta
+            );
+            const dotCurr = dot({ x: curr[0], y: curr[1] }, delta);
+            return dotMostAligned > dotCurr ? mostAligned : curr;
+        });
+        snake.newDirection = directions.indexOf(dir) as Direction;
+    };
+
+    return (
+        <Sketch
+            setup={setup}
+            draw={draw}
+            keyPressed={onKeyPressed}
+            touchMoved={onTouchMoved}
+            touchStarted={onTouchStarted}
+            touchEnded={onTouchEnded}
+        />
+    );
 };

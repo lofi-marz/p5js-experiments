@@ -28,7 +28,7 @@ const SketchesGalleryPage: NextPage<SketchesGalleryProps> = ({
         <SketchLink key={s.slug} {...s} />
     ));
     return (
-        <div className="dark flex h-screen w-screen items-start justify-between bg-black p-10 text-white">
+        <div className="flex h-full w-full items-start justify-between p-10 dark:bg-black dark:text-white">
             {links}
         </div>
     );

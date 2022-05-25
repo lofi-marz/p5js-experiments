@@ -7,7 +7,7 @@
 
 
 .react-p5 {
-    @apply w-full !important
+    @apply w-full bg-black invert dark:invert-0 !important
 }
 
 .react-p5 canvas {

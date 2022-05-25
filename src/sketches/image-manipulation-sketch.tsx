@@ -18,6 +18,7 @@ const ImageManipulationSketch: React.FC = () => {
     const particles: Particle[] = [];
     const size = 16;
     const resolution = size / 4;
+
     const preload = (p5: P5) => {
         img = p5.loadImage(rubyImage);
     };

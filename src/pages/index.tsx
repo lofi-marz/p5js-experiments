@@ -3,7 +3,7 @@ import { PolygonMorphSketch } from 'sketches';
 
 const Home: NextPage = () => {
     return (
-        <div className="dark h-screen w-screen bg-black">
+        <div className="h-screen w-screen dark:bg-black">
             Hi
             <PolygonMorphSketch />
         </div>

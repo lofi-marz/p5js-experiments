@@ -223,7 +223,7 @@ function generateIcosphere(radius: number, divisions = 3): Vector3[] {
     return sortedVertices;
 }
 
-export const WebGLTestSketch: React.FC = () => {
+export const GlTestSketch: React.FC = () => {
     let hue1: number;
     let hue2: number;
 

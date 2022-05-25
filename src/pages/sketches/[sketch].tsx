@@ -12,6 +12,7 @@ import {
     getSketchDescriptionPath,
 } from '../../utils/utils';
 import { kebabToPascalCase } from '../../utils/sketchNameConverter';
+import { Suspense } from 'react';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 
@@ -29,7 +30,7 @@ const SketchPage: NextPage = ({ source, frontMatter }: MDXRemoteProps) => {
                     kebabToPascalCase(sketch as string) + 'Sketch';
                 console.log(`Loading ${componentName}`);
                 const s = componentName as SketchComponent;
-                return mod[s] ?? mod['SnakeSketch'];
+                if (mod[s]) return mod[s];
             }),
         {
             ssr: false,
@@ -37,16 +38,18 @@ const SketchPage: NextPage = ({ source, frontMatter }: MDXRemoteProps) => {
     );
 
     return (
-        <div className="dark h-screen w-screen bg-black text-white">
-            <DynamicSketch />
-            <div className="w-full p-5 font-text">
-                <h1 className="font-title text-6xl font-bold">
+        <div>
+            <Suspense fallback={<div className="w-full">Loading...</div>}>
+                <DynamicSketch />
+            </Suspense>
+            <div className="w-full grow p-5 font-text">
+                <h1 className="py-5 font-title text-6xl font-bold dark:text-white">
                     {frontMatter.title}
                 </h1>
                 <h2 className="font-text font-title text-lg font-light italic">
                     {frontMatter.description}
                 </h2>
-                <div className="py-5">
+                <div className="py-5 dark:prose-invert">
                     <MDXRemote {...source} />
                 </div>
             </div>
