@@ -31,25 +31,26 @@ const SketchPage: NextPage = ({ source, frontMatter }: MDXRemoteProps) => {
                 console.log(`Loading ${componentName}`);
                 const s = componentName as SketchComponent;
                 if (mod[s]) return mod[s];
+                router.push('sketches/snake');
             }),
         {
             ssr: false,
         }
     );
-
+    //TODO: I don't actually know if this suspense does anything
     return (
         <div>
             <Suspense fallback={<div className="w-full">Loading...</div>}>
-                <DynamicSketch />
+                <div className="mx-auto md:w-3/4">
+                    <DynamicSketch />
+                </div>
             </Suspense>
-            <div className="w-full grow p-5 font-text">
-                <h1 className="py-5 font-title text-6xl font-bold dark:text-white">
+            <div className="prose prose-neutral mx-auto w-full grow p-5 py-10 font-text prose-headings:font-title dark:prose-invert">
+                <h1 className="font-bold dark:text-white">
                     {frontMatter.title}
                 </h1>
-                <h2 className="font-text font-title text-lg font-light italic">
-                    {frontMatter.description}
-                </h2>
-                <div className="py-5 dark:prose-invert">
+                <h3 className="italic">tldr: {frontMatter.description}</h3>
+                <div className="py-5">
                     <MDXRemote {...source} />
                 </div>
             </div>
@@ -67,7 +68,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     const source = fs.readFileSync(filePath);
 
     const { content, data } = matter(source);
-
+    console.log(content);
     const mdxSource = await serialize(content, {
         // Optionally pass remark/rehype plugins
         mdxOptions: {
@@ -76,6 +77,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
         },
         scope: data,
     });
+    console.log(mdxSource);
 
     return {
         props: {

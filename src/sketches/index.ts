@@ -4,3 +4,4 @@ export * from './gl-test/gl-test-sketch';
 export * from './rotating-waves/rotating-waves-sketch';
 export * from './metaballs/metaballs-sketch';
 export * from './visualiser/visualiser-sketch';
+export * from './bezier/bezier-sketch';

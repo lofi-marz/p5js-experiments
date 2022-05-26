@@ -2,6 +2,18 @@
 title: Metaballs
 description: A 2d implementation of Metaballs
 ---
-A simple implementation of [Metaballs](https://en.wikipedia.org/wiki/Metaballs)
-Each metaball is defined by a position, radius and a falloff function, in this case the squared distance from the points
+A simple implementation of [Metaballs](https://en.wikipedia.org/wiki/Metaballs).
+
+## How it works
+
+Each metaball is defined by a position, radius/strength and a falloff function
+
+For each pixel we calculate the density by summing the values of the falloff function for that pixel.
+The further from the centre of a metaball a pixel is, the lower the value, and this falls off proportional to 1/r^2.
+
+This strength value will add to the density of that pixel, which is then represented using the brightness of the pixel.
+This gives you extremely high values close to the metaball, which fall off very fast, and we can then threshold these to produce clean lines
+
+I thought it would be interesting if I implemented negative strengths
+so each metaball has a 50/50 chance of being negative, which will subtract from the density instead of adding.
 

@@ -1,0 +1,15 @@
+---
+title: Bezier Curves
+description: bezier curves
+---
+
+A little investigation into drawing bezier curves, [this description was really helpful](https://javascript.info/bezier-curve)
+
+Tap/click a point to toggle moving it its a little buggy looking but it should work fine
+
+I used De Casteljau's Algorithm for this, the tl;dr is:
+ - Pick n control points
+ - Connect these control points with lines
+ - Lerp a point across each of these lines to give you n-1 lines along the paths of these points
+ - Lerp points across those lines
+ - Do this iteratively until you end up with 1 point, the line this point traces is your curve
