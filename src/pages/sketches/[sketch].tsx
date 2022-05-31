@@ -19,7 +19,7 @@ import { Suspense } from 'react';
 const SketchPage: NextPage = ({ source, frontMatter }: MDXRemoteProps) => {
     const router = useRouter();
     const { sketch } = router.query;
-
+    console.log('Frontmatter:', sketch, frontMatter);
     const DynamicSketch = dynamic(
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
@@ -38,6 +38,7 @@ const SketchPage: NextPage = ({ source, frontMatter }: MDXRemoteProps) => {
         }
     );
     //TODO: I don't actually know if this suspense does anything
+
     return (
         <div>
             <Suspense fallback={<div className="w-full">Loading...</div>}>
@@ -47,11 +48,13 @@ const SketchPage: NextPage = ({ source, frontMatter }: MDXRemoteProps) => {
             </Suspense>
             <div className="prose prose-neutral mx-auto w-full grow p-5 py-10 font-text prose-headings:font-title dark:prose-invert">
                 <h1 className="font-bold dark:text-white">
-                    {frontMatter.title}
+                    {frontMatter ? frontMatter.title : ''}
                 </h1>
-                <h3 className="italic">tldr: {frontMatter.description}</h3>
+                <h3 className="italic">
+                    tldr: {frontMatter ? frontMatter.title : ''}
+                </h3>
                 <div className="py-5">
-                    <MDXRemote {...source} />
+                    {source ? <MDXRemote {...source} /> : null}
                 </div>
             </div>
         </div>
@@ -68,7 +71,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     const source = fs.readFileSync(filePath);
 
     const { content, data } = matter(source);
-    console.log(content);
+    console.log('Data:', data);
     const mdxSource = await serialize(content, {
         // Optionally pass remark/rehype plugins
         mdxOptions: {
@@ -77,7 +80,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
         },
         scope: data,
     });
-    console.log(mdxSource);
+    console.log('Source:', mdxSource);
 
     return {
         props: {

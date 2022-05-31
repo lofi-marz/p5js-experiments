@@ -1,30 +1,20 @@
 import React from 'react';
 import P5 from 'p5';
-import BackgroundSketch from '../components/BackgroundSketch';
-
-
-
-
-
-
+import Sketch from 'react-p5';
 
 //Something to map the x y point to another
 
 const xCount = 20;
 const yCount = 20;
-const cellWidth = 500/xCount;
-const cellHeight  = 500/yCount;
-
-
+const cellWidth = 500 / xCount;
+const cellHeight = 500 / yCount;
 
 class Path {
-
     start: P5.Vector;
 
     constructor(startPos: P5.Vector) {
         this.start = startPos;
     }
-
 
     draw(p5: P5, flowField: number[][]) {
         const pos = this.start;
@@ -50,33 +40,26 @@ class Path {
             }
             const xStrength = p5.cos(theta);
             const yStrength = p5.sin(theta);
-            pos.x += xStrength * cellWidth/20;
-            pos.y += yStrength * cellHeight/20;
+            pos.x += (xStrength * cellWidth) / 20;
+            pos.y += (yStrength * cellHeight) / 20;
         }
         p5.endShape();
     }
-
 }
 
 const VectorFieldSketch: React.FC = () => {
     const flowField: number[][] = [];
     const paths: Path[] = [];
 
-
     const drawField = false;
 
     function generateAngle(p5: P5, x: number, y: number): number {
-
-        return 2*Math.PI - p5.atan2(y - yCount/2, x-xCount/2);
+        return 2 * Math.PI - p5.atan2(y - yCount / 2, x - xCount / 2);
         //return p5.map(x * y, 0, xCount * yCount, -Math.PI, Math.PI);
         //return p5.map(x - y, 0, xCount + yCount, 0, Math.PI);
-
     }
 
-
-
     const setup = (p5: P5, canvasParentRef: Element) => {
-
         //p5.createCanvas(p5.windowWidth * SCALE, p5.windowHeight * SCALE).parent(canvasParentRef);
         p5.createCanvas(500, 500).parent(canvasParentRef);
 
@@ -86,19 +69,15 @@ const VectorFieldSketch: React.FC = () => {
                 flowField[y].push(generateAngle(p5, x, y));
                 paths.push(new Path(p5.createVector(x * 20, y * 20)));
             }
-
         }
         console.log(flowField);
-
-
 
         p5.noLoop();
     };
 
     const draw = (p5: P5) => {
-
         p5.clear();
-        p5.translate(cellWidth/ 2, cellHeight/ 2);
+        p5.translate(cellWidth / 2, cellHeight / 2);
         p5.stroke('white');
         if (drawField) {
             for (let y = 0; y < yCount; y++) {
@@ -106,8 +85,8 @@ const VectorFieldSketch: React.FC = () => {
                 for (let x = 0; x < xCount; x++) {
                     const realX = p5.map(x, 0, xCount, 0, 500);
                     const theta = flowField[y][x];
-                    const newX = realX + cellWidth/2 * p5.cos(theta);
-                    const newY = realY + cellWidth/2 * p5.sin(theta);
+                    const newX = realX + (cellWidth / 2) * p5.cos(theta);
+                    const newY = realY + (cellWidth / 2) * p5.sin(theta);
                     p5.circle(realX, realY, 4);
                     p5.line(realX, realY, newX, newY);
                 }
@@ -116,13 +95,9 @@ const VectorFieldSketch: React.FC = () => {
         for (const p of paths) {
             p.draw(p5, flowField);
         }
-
     };
 
-
-
-    return <BackgroundSketch setup={setup} draw={draw} />;
+    return <Sketch setup={setup} draw={draw} />;
 };
 
 export default VectorFieldSketch;
-
