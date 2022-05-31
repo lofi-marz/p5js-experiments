@@ -42,7 +42,7 @@ const SketchPage: NextPage = ({ source, frontMatter }: MDXRemoteProps) => {
     return (
         <div>
             <Suspense fallback={<div className="w-full">Loading...</div>}>
-                <div className="mx-auto md:w-3/4">
+                <div className="mx-auto md:w-3/4 lg:w-1/2">
                     <DynamicSketch />
                 </div>
             </Suspense>
