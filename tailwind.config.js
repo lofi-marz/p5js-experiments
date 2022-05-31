@@ -8,12 +8,14 @@ module.exports = {
         './src/pages/**/*.{js,ts,jsx,tsx}',
         './src/components/**/*.{js,ts,jsx,tsx}',
     ],
+    darkMode: 'class',
     theme: {
         extend: {
             fontFamily: {
                 title: ['Poppins', ...defaultTheme.fontFamily.sans],
                 text: [...defaultTheme.fontFamily.sans],
             },
+
             keyframes: {
                 wiggle: {
                     '0%, 100%': { transform: 'rotate(-3deg)' },

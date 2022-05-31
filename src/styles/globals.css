@@ -6,6 +6,12 @@
 @tailwind utilities;
 
 
+@layer components {
+    .link {
+        @apply transition-all duration-150 hover:invert bg-white dark:bg-black;
+    }
+}
+
 .react-p5 {
     @apply w-full bg-black invert dark:invert-0 !important
 }
@@ -13,3 +19,4 @@
 .react-p5 canvas {
     @apply h-full w-full !important
 }
+
